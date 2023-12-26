@@ -18,7 +18,7 @@ const app: Application = express();
 // Middleware
 app.use(express.json());
 app.use(express.static('public')); // Pour servir les fichiers statiques
-app.use(express.urlencoded({ extended: true }));0
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Connect to DB

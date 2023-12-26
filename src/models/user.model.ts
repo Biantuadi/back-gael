@@ -1,34 +1,15 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
+import { IUser } from "../types/mainDB.model";
 
-export interface IUser extends mongoose.Document {
-  id: string;
-  firstName: string;
-  email: string;
-  lastName: string;
-  imgProfile?: string;
-  phone?: string;
-  birthDate?: Date;
-  bio?: string;
-  address?: string;
-  password: string;
-  role?: string;
-  preferences?: {
-    theme: string;
-    language: string;
-    notifications: boolean;
 
-  };
-  eventInterest?: string[];
-  createdAt?: Date;
-}
 
 const userSchema = new mongoose.Schema({
-  firstName: {
+  firstname: {
     type: String,
     required: [true, "First name is required"],
   },
-  lastName: {
+  lastname: {
     type: String,
     required: [true, "Last name is required"],
   },
@@ -75,10 +56,6 @@ const userSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
-  },
-  eventInterest: {
-    type: [String],
-    default: ["Sport", "Culture", "Music"],
   },
   createdAt: {
     type: Date,
