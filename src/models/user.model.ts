@@ -2,8 +2,6 @@ import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import { IUser } from "../types/mainDB.model";
 
-
-
 const userSchema = new mongoose.Schema({
   firstname: {
     type: String,
