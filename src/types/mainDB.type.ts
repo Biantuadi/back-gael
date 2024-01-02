@@ -59,3 +59,27 @@ export interface IfactureAlbum extends mongoose.Document {
     price: number;
     createdAt?: Date;
 }
+
+export interface IfactureEvent extends mongoose.Document {
+    id: string;
+    event: string;
+    user: string;
+    price: number;
+    createdAt?: Date;
+}
+
+// chat
+export interface IChat extends mongoose.Document {
+    id: string;
+    user: string;
+    message: string;
+    createdAt?: Date;
+}
+
+export interface IChatRoom extends mongoose.Document {
+    id: string;
+    name: string;
+    users: string[];
+    createdAt?: Date;
+}
+

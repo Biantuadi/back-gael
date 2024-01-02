@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IticketEvent } from "../types/mainDB.model";
+import { IticketEvent } from "../types/mainDB.type";
 
 const ticketEventSchema = new mongoose.Schema({
   event: {

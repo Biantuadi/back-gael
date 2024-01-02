@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IfactureAlbum } from "../types/mainDB.model";
+import { IfactureAlbum } from "../types/mainDB.type";
 
 const factureAlbumSchema = new mongoose.Schema({
   album: {
