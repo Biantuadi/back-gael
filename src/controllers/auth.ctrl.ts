@@ -64,7 +64,7 @@ export default class AuthController {
         res.status(400).json({ errors: errors.array() });
         return;
       }
-      const { firstName, lastName, email, password } = req.body;
+      const { firstname, lastname, email, password } = req.body;
 
       const transformedEmail = email.toLowerCase();
 
@@ -87,8 +87,8 @@ export default class AuthController {
         AuthController.SALT_ROUNDS
       );
       const newUser = new User({
-        firstName,
-        lastName,
+        firstname,
+        lastname,
         email: transformedEmail,
         password: hashedPassword,
         createdAt: new Date(),

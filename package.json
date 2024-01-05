@@ -1,4 +1,5 @@
 {
+  "name": "gael-music",
   "description": "",
   "scripts": {
     "start": "nodemon src/index.ts",

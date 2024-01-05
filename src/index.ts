@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import config from './config/env.config';
 import './db/mongoDB'; // Connect to MongoDB
-import ChatController from './controllers/chat.ctrl';
+import ChatController from './controllers/Chat.ctrl';
 
 const { port, mongoUrl } = config;
 
