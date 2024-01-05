@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { IAlbum } from "../types/mainDB.type";
 
 const albumSchema = new mongoose.Schema({
-  name: {
+  title: {
     type: String,
     required: [true, "Name is required"],
   },

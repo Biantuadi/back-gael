@@ -10,7 +10,6 @@ interface AppConfig {
 }
 
 const {
-  DEV_MODE,
   PORT = "8080",
   JWT_SECRET,
   TOKEN_EXPIRATION,

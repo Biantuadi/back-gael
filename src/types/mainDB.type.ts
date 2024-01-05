@@ -12,6 +12,7 @@ export interface IUser extends mongoose.Document {
     address?: string;
     password: string;
     role?: string;
+    isConected?: boolean;
     preferences?: {
       theme: string;
       language: string;
@@ -21,13 +22,23 @@ export interface IUser extends mongoose.Document {
     createdAt?: Date;
   }
 
+//   song
+export interface ISong extends mongoose.Document {
+    id: string;
+    title: string;
+    artist: string;
+    album: string;
+    year: number;
+    imgSong?: string;
+    createdAt?: Date;
+}
+
   export interface IAlbum extends mongoose.Document {
-    name: string;
+    title: string;
     artist: string;
     year: number;
     imgAlbum?: string;
-    genre?: string;
-    songs?: string[];
+    songs?: ISong[];
     usersBuy?: string[];
     createdAt?: Date;
 }
@@ -60,26 +71,21 @@ export interface IfactureAlbum extends mongoose.Document {
     createdAt?: Date;
 }
 
-export interface IfactureEvent extends mongoose.Document {
+// chat entre 2 users
+export interface IChat extends mongoose.Document {
     id: string;
-    event: string;
-    user: string;
-    price: number;
+    user1: string;
+    user2: string;
+    messages: IMessage[];
     createdAt?: Date;
 }
 
-// chat
-export interface IChat extends mongoose.Document {
+// message dans un chat
+export interface IMessage extends mongoose.Document {
     id: string;
     user: string;
     message: string;
+    isRead: boolean; 
+    isTyping: boolean;
     createdAt?: Date;
 }
-
-export interface IChatRoom extends mongoose.Document {
-    id: string;
-    name: string;
-    users: string[];
-    createdAt?: Date;
-}
-

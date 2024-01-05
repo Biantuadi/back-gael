@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "USER",
   },
+  isConected: { 
+    type: Boolean,
+    default: false,
+  },
   preferences: {
     theme: {
       type: String,
