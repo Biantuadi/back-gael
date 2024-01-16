@@ -1,10 +1,10 @@
 import { Socket } from 'socket.io';
-import Chat from '../models/chats.model';  
-import Message from '../models/message.model';  
-import { User } from '../models/user.model';
-import { IUser } from '../types/mainDB.type';
-import { IChat } from '../types/mainDB.type';
-import { IMessage } from '../types/mainDB.type';
+import Chat from '../../models/chat/chats.model';  
+import Message from '../../models/chat/message.model';  
+import { User } from '../../models/user.model';
+import { IUser } from '../../types/mainDB.type';
+import { IChat } from '../../types/mainDB.type';
+import { IMessage } from '../../types/mainDB.type';
 
 interface ChatMessage {
   sender: string;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 
-import { IEvent } from "../types/mainDB.type";
+import { IEvent } from "../../types/mainDB.type";
 
 const eventSchema = new mongoose.Schema({
   title: {

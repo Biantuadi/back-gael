@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { IChat } from "../types/mainDB.type";
-import { IMessage } from "../types/mainDB.type";
+import { IChat } from "../../types/mainDB.type";
+import { IMessage } from "../../types/mainDB.type";
 
 const chatSchema = new mongoose.Schema({
     id: {type: String, required: true},

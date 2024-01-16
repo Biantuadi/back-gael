@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import config from './config/env.config';
 import './db/mongoDB'; // Connect to MongoDB
-import ChatController from './controllers/Chat.ctrl';
+import ChatController from './controllers/chat/Chat.ctrl';
 import { authRoutes } from './routes/auth.routes';
 import { userRoutes } from './routes/user.routes';
 import fileUpload from 'express-fileupload';
@@ -25,7 +25,7 @@ const io = new Server(httpServer, {
 });
 
 // Middleware
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '1mb' }));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
