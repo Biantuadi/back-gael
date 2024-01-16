@@ -31,39 +31,48 @@ export default class SongController {
     }
   }
 
-  public async uploadSong(req: Request, res: Response) {
-    try {
-      const song = await Song.findById(req.params.id);
-      if (!song) {
-        return res.status(404).json({ error: "Song not found" });
-      }
-      if (!req.files) {
-        return res.status(400).json({ error: "No file uploaded" });
-      }
-      const songFile = req.files.song as UploadedFile;
-      if (!songFile) {
-        return res.status(400).json({ error: "No file uploaded" });
-      }
-      if (songFile.mimetype !== "audio/mpeg") {
-        return res.status(400).json({ error: "File type not supported" });
-      }
-      const songPath = path.join(
-        __dirname,
-        `../../public/songs/${songFile.name}`
-      );
-      songFile.mv(songPath, async (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ error: "Server error" });
-        }
-        song.song = `/songs/${songFile.name}`;
-        await song.save();
-        res.status(200).json(song);
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+//   public async uploadSong(req: Request, res: Response) {
+//     try {
+//       const song = await Song.findById(req.params.id);
+
+//       if (!song) {
+//         return res.status(404).json({ error: "Song not found" });
+//       }
+
+//       if (!req.files) {
+//         return res.status(400).json({ error: "No file uploaded" });
+//       }
+
+//       const songTitle = song.title.replace(/\s/g, "-");
+
+//       const songFile = req.files.song as UploadedFile;
+
+//       if (!songFile) {
+//         return res.status(400).json({ error: "No file uploaded" });
+//       }
+
+//       if (songFile.mimetype !== "audio/mpeg") {
+//         return res.status(400).json({ error: "File type not supported" });
+//       }
+
+//       const songPath = path.join(
+//         __dirname,
+//         `../../public/songs/${songFile.name}` // ca va creer un dossier public et un dossier songs mais le ${songFile.name} va creer un fichier avec le nom du fichier uploader
+//       );
+
+//       songFile.mv(songPath, async (err) => {
+//         if (err) {
+//           console.error(err);
+//           return res.status(500).json({ error: "Server error" });
+//         }
+//         song.song = `/songs/${songFile.name}`;
+//         await song.save();
+//         res.status(200).json(song);
+//       });
+//     } catch (error: any) {
+//       res.status(500).json({ error: error.message });
+//     }
+//   }
 
   public async update(req: Request, res: Response) {
     try {

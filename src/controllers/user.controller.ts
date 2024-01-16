@@ -56,7 +56,6 @@ export default class UserController {
       }
 
       // Si un fichier avec le même userID existe, le supprimer
-      // const existingFilePath = path.join(uploadDir, `${userId}_avatar.*`);
       const existingFiles = fs.readdirSync(uploadDir).filter(file => new RegExp(`${userId}_avatar.*`).test(file));
       
       existingFiles.forEach(existingFile => {
