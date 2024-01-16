@@ -35,10 +35,6 @@ app.use(fileUpload());
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Bienvenue sur gaël api !');
-});
-
 // Socket.IO connection handling
 io.on('connection', (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
