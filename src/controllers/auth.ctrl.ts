@@ -32,8 +32,8 @@ export default class AuthController {
         return;
       }
 
-
       const user = await User.findOne({ email: transformedEmail });
+      
       if (!user) {
         res.status(400).json({ message: "User not found" });
         return;
@@ -48,7 +48,13 @@ export default class AuthController {
         expiresIn: TOKEN_EXPIRATION,
       });
 
-      res.status(200).json({ token });
+      // send back the all user info (except password) and the token
+      const userToSend = {
+        ...user.toObject(),
+        password: undefined,
+      };
+
+      res.status(200).json({ user: userToSend, token });
     } catch (error: any) {
       console.error("An error occurred while processing the request:", error);
       res
@@ -100,7 +106,14 @@ export default class AuthController {
         expiresIn: TOKEN_EXPIRATION,
       });
 
-      res.status(200).json({ token });
+      // send back the all user info (except password) and the token
+      const userToSend = {
+        ...savedUser.toObject(),
+        password: undefined,
+      };
+
+      res.status(200).json({ user: userToSend, token });
+
     } catch (error: any) {
       console.error("An error occurred while processing the request:", error);
       res

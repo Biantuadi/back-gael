@@ -8,28 +8,26 @@ const JWT_SECRET: string = process.env.JWT_SECRET as string;
 
 export default class AuthMiddleware {
 
-  public static async isTokenValid(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-
-    try {
-      const token = req.headers.authorization?.split(" ")[1];
-      if (!token) {
-        res.status(401).json({ message: "No token, authorization denied" });
-        return;
+    public static async isTokenValid(
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ): Promise<void> {
+      try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+          res.status(401).json({ message: "Pas de jeton, autorisation refusée" });
+          return;
+        }
+  
+        const decoded = jwt.verify(token, JWT_SECRET) as { id: string }; // Supposons que l'ID est une chaîne
+        req.body.user = decoded;
+        next();
+      } catch (error: any) {
+        console.error("Une erreur s'est produite lors du traitement de la demande :", error);
+        res.status(500).json({ message: "Une erreur s'est produite lors du traitement de la demande" });
       }
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.body.user = decoded;
-      next();
-    } catch (error: any) {
-      console.error("An error occurred while processing the request:", error);
-      res
-        .status(500)
-        .json({ message: "An error occurred while processing the request" });
     }
-  }
 
   public static async isAdmin(
     req: Request,

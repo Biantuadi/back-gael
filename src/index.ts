@@ -5,11 +5,14 @@ import cors from 'cors';
 import config from './config/env.config';
 import './db/mongoDB'; // Connect to MongoDB
 import ChatController from './controllers/Chat.ctrl';
+import { authRoutes } from './routes/auth.routes';
+import { userRoutes } from './routes/user.routes';
+import fileUpload from 'express-fileupload';
 
-const { port, mongoUrl } = config;
+const { port } = config;
 
-if (!port || !mongoUrl) {
-  console.error('Veuillez renseigner les variables d\'environnement');
+if (!port) {
+  console.error('Veuillez renseigner la variable d\'environnement pour le port');
   process.exit(1);
 }
 
@@ -26,24 +29,15 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(fileUpload());
 
 // Routes
-import { authRoutes } from './routes/auth.routes';
-import { userRoutes } from './routes/user.routes';
-// import { ticketRoutes } from './routes/ticket.routes';
-// import { eventRoutes } from './routes/event.routes';
-
-// Les routes API
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-// app.use('/tickets', ticketRoutes);
-// app.use('/events', eventRoutes);
 
 app.get('/', (req, res) => {
   res.send('Bienvenue sur gaël api !');
 });
-
-
 
 // Socket.IO connection handling
 io.on('connection', (socket: Socket) => {

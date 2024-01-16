@@ -1,5 +1,9 @@
 import { User } from "../models/user.model";
 import { Request, Response } from "express";
+import fs from "fs";
+import path from "path";
+import { UploadedFile } from "express-fileupload";
+
 
 export default class UserController {
   public async getMe(req: Request, res: Response): Promise<void> {
@@ -29,6 +33,51 @@ export default class UserController {
       res.status(200).json(usersWithoutPasswords);
     } catch (error: any) {
       res.status(500).json(error);
+    }
+  }
+
+  public async uploadAvatar(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req.body.user as { id: string }).id; // Assurez-vous que l'ID est une chaîne
+
+      if (!req.files || Object.keys(req.files).length === 0) {
+        res.status(400).json({ message: "Aucun fichier n'a été téléchargé." });
+        return;
+      }
+
+      const avatarFile = req.files.avatar as UploadedFile;
+
+      const uploadDir = path.join(__dirname, '..', 'public', 'avatar');
+      const fileName = `${userId}_avatar${path.extname(avatarFile.name).toLowerCase()}`;
+      const uploadPath = path.join(uploadDir, fileName);
+
+      // Vérifiez si le dossier de destination existe, sinon, créez-le
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      // Déplacez le fichier téléchargé vers le dossier de destination
+      avatarFile.mv(uploadPath, (err:any) => {
+        if (err) {
+          console.error("Erreur lors de l'enregistrement du fichier :", err);
+          res.status(500).json({ message: "Erreur lors de l'enregistrement du fichier." });
+          return;
+        }
+
+        // Mise à jour du chemin de l'avatar dans la base de données
+        User.findByIdAndUpdate(userId, { $set: { avatar: `/avatar/${fileName}` } }, (updateError:any) => {
+          if (updateError) {
+            console.error("Erreur lors de la mise à jour de la base de données :", updateError);
+            res.status(500).json({ message: "Erreur lors de la mise à jour de la base de données." });
+            return;
+          }
+
+          res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." });
+        });
+      });
+    } catch (error: any) {
+      console.error("Une erreur s'est produite lors du traitement de la demande :", error);
+      res.status(500).json({ message: "Une erreur s'est produite lors du traitement de la demande." });
     }
   }
 
