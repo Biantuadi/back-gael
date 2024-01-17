@@ -46,7 +46,7 @@ export default class UserController {
       }
 
       const avatarFile = req.files.avatar as UploadedFile;
-      const uploadDir = path.join(__dirname, '../..', 'public', 'avatars');
+      const uploadDir = path.join(__dirname, '..', 'medias', 'avatars');
       const fileName = `${userId}_avatar${path.extname(avatarFile.name).toLowerCase()}`;
       const uploadPath = path.join(uploadDir, fileName);
 
@@ -72,7 +72,7 @@ export default class UserController {
 
         try {
           // Mise à jour du chemin de l'avatar dans la base de données
-          await User.findByIdAndUpdate(userId, { $set: { avatar: `/avatars/${fileName}` } });
+          await User.findByIdAndUpdate(userId, { $set: { avatar: `medias/avatars/${fileName}` } });
           res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." });
         } catch (updateError: any) {
           console.error("Erreur lors de la mise à jour de la base de données :", updateError);
