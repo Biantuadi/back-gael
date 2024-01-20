@@ -28,7 +28,7 @@ export interface ISong extends mongoose.Document {
   title: string;
   artist?: string;
   album?: string;
-  song?: string;
+  songLink?: string;
   year: number;
   imgSong?: string;
   createdAt?: Date;
