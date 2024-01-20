@@ -40,33 +40,27 @@ export default class UserController {
     try {
       const userId = (req.body.user as { userID: string }).userID;
 
-      console.log(req.files);
-      
-  
       if (!req.files || Object.keys(req.files).length === 0 || !req.files.avatar) {
         res.status(400).json({ message: "Aucun fichier d'avatar n'a été téléchargé." });
         return;
       }
-  
+
       const avatarFile = req.files.avatar as UploadedFile;
-  
+
       // Convertir le fichier en base64
-      const fileBuffer = fs.readFileSync(avatarFile.tempFilePath);
-      const base64Data = fileBuffer.toString('base64');
+      const base64Data = avatarFile.data.toString('base64');
       const base64Avatar = `data:${avatarFile.mimetype};base64,${base64Data}`;
-  
+
       // Mise à jour du chemin de l'avatar dans la base de données
       await User.findByIdAndUpdate(userId, { $set: { avatar: base64Avatar } });
-  
-      // Supprimer le fichier temporaire
-      fs.unlinkSync(avatarFile.tempFilePath);
-  
+
       res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." });
     } catch (error: any) {
       console.error("Une erreur s'est produite lors du traitement de la demande :", error);
       res.status(500).json({ message: "Une erreur s'est produite lors du traitement de la demande." });
     }
   }
+  
 
   public async updateUser(req: Request, res: Response): Promise<void> {
     try {
