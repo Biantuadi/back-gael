@@ -7,7 +7,7 @@ const songController = new AlbumController();
 
 albumRoutes.get("/", AuthMiddleware.isTokenValid, songController.getAll);
 albumRoutes.get("/:id", AuthMiddleware.isTokenValid, songController.getById);
-albumRoutes.post("/", AuthMiddleware.isTokenValid,AuthMiddleware.isAdmin, songController.create);
+albumRoutes.post("/", AuthMiddleware.isAdmin, songController.create);
 albumRoutes.put("/:id", AuthMiddleware.isAdmin, songController.update);
 albumRoutes.delete("/:id", AuthMiddleware.isAdmin, songController.delete);
 

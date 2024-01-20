@@ -41,7 +41,7 @@ export default class AuthMiddleware {
         return;
       }
       const decoded: any = jwt.verify(token, JWT_SECRET);
-      if (decoded.role !== "admin") {
+      if (decoded.role !== "ADMIN") {
         res.status(401).json({ message: "Please login as admin" });
         return;
       }
