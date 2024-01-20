@@ -46,44 +46,21 @@ export default class UserController {
       }
 
       const avatarFile = req.files.avatar as UploadedFile;
-      const uploadDir = path.join(__dirname, '..', 'medias', 'avatars');
-      const fileName = `${userId}_avatar${path.extname(avatarFile.name).toLowerCase()}`;
-      const uploadPath = path.join(uploadDir, fileName);
 
-      // Vérifiez si le dossier de destination existe, sinon, créez-le
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
+      // Convertir le fichier en base64
+      const base64Data = avatarFile.data.toString('base64');
+      const base64Avatar = `data:${avatarFile.mimetype};base64,${base64Data}`;
 
-      // Si un fichier avec le même userID existe, le supprimer
-      const existingFiles = fs.readdirSync(uploadDir).filter(file => new RegExp(`${userId}_avatar.*`).test(file));
-      
-      existingFiles.forEach(existingFile => {
-        fs.unlinkSync(path.join(uploadDir, existingFile));
-      });
+      // Mise à jour du chemin de l'avatar dans la base de données
+      await User.findByIdAndUpdate(userId, { $set: { avatar: base64Avatar } });
 
-      // Déplacez le fichier téléchargé vers le dossier de destination
-      avatarFile.mv(uploadPath, async (err) => {
-        if (err) {
-          console.error("Erreur lors de l'enregistrement du fichier :", err);
-          res.status(500).json({ message: "Erreur lors de l'enregistrement du fichier." });
-          return;
-        }
-
-        try {
-          // Mise à jour du chemin de l'avatar dans la base de données
-          await User.findByIdAndUpdate(userId, { $set: { avatar: `medias/avatars/${fileName}` } });
-          res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." });
-        } catch (updateError: any) {
-          console.error("Erreur lors de la mise à jour de la base de données :", updateError);
-          res.status(500).json({ message: "Erreur lors de la mise à jour de la base de données." });
-        }
-      });
+      res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." });
     } catch (error: any) {
       console.error("Une erreur s'est produite lors du traitement de la demande :", error);
       res.status(500).json({ message: "Une erreur s'est produite lors du traitement de la demande." });
     }
   }
+  
 
   public async updateUser(req: Request, res: Response): Promise<void> {
     try {

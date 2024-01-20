@@ -1,7 +1,5 @@
 import Song from "../models/song.model";
 import { Request, Response } from "express";
-import path from "path";
-import { UploadedFile } from "express-fileupload";
 
 export default class SongController {
   public async getAll(req: Request, res: Response) {
