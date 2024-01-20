@@ -30,7 +30,7 @@ app.use(express.json({ limit: '10mb' }));
 // app.use(express.static('public'));
 // app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(fileUpload());
+// app.use(fileUpload());
 
 // Routes
 app.use('/auth', authRoutes);
