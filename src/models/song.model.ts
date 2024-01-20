@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { ISong } from "../types/mainDB.type";
 
 const songSchema = new mongoose.Schema({
-    id: {type: String, required: true},
     title: {type: String, required: true},
     artist: {type: String, required: false},
     album: {type: String, required: false},
