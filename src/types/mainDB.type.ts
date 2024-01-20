@@ -36,6 +36,7 @@ export interface ISong extends mongoose.Document {
 
 export interface IAlbum extends mongoose.Document {
   title: string;
+  subtitle?: string;
   artist: string;
   year: number;
   imgAlbum?: string;

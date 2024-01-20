@@ -6,6 +6,9 @@ const albumSchema = new mongoose.Schema({
     type: String,
     required: [true, "Name is required"],
   },
+  subtitle: {
+    type: String,
+  },
   artist: {
     type: String,
     required: [true, "Artist is required"],
