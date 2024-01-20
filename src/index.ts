@@ -5,9 +5,10 @@ import cors from 'cors';
 import config from './config/env.config';
 import './db/mongoDB'; // Connect to MongoDB
 import ChatController from './controllers/chat/Chat.ctrl';
-import { authRoutes } from './routes/auth.routes';
-import { userRoutes } from './routes/user.routes';
-import { songRoutes } from './routes/song.routes';
+import { authRoutes } from './routes/user/auth.routes';
+import { userRoutes } from './routes/user/user.routes';
+import { songRoutes } from './routes/songs/song.routes';
+import { albumRoutes } from './routes/songs/album.routes';
 import fileUpload from 'express-fileupload';
 
 const { port } = config;
@@ -36,6 +37,8 @@ app.use(fileUpload());
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/songs', songRoutes);
+app.use('/Albums', albumRoutes);
+
 
 // Socket.IO connection handling
 io.on('connection', (socket: Socket) => {

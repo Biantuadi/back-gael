@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ISong } from "../types/mainDB.type";
+import { ISong } from "../../types/mainDB.type";
 
 const songSchema = new mongoose.Schema({
     title: {type: String, required: true},

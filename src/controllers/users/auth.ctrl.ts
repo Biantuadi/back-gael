@@ -1,9 +1,9 @@
-import { User } from "../models/user.model";
+import { User } from "../../models/user.model";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
-import config from "../config/env.config";
+import config from "../../config/env.config";
 
 const JWT_SECRET = config.jwtSecret as string;
 const TOKEN_EXPIRATION = config.tokenExpiration as string;

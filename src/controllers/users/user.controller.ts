@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import { User } from "../../models/user.model";
 import { Request, Response } from "express";
 import fs from "fs";
 import path from "path";

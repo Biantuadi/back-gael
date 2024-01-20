@@ -1,6 +1,6 @@
 import { Router } from "express";
-import SongController from "../controllers/song.controller";
-import AuthMiddleware from "../middlewares/authMiddleware";
+import SongController from "../../controllers/songs/song.controller";
+import AuthMiddleware from "../../middlewares/authMiddleware";
 
 const songRoutes = Router();
 const songController = new SongController();

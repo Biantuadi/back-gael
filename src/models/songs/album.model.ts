@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IAlbum } from "../types/mainDB.type";
+import { IAlbum } from "../../types/mainDB.type";
 
 const albumSchema = new mongoose.Schema({
   title: {

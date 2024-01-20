@@ -1,4 +1,4 @@
-import Song from "../models/song.model";
+import Song from "../../models/songs/song.model";
 import { Request, Response } from "express";
 
 export default class SongController {
