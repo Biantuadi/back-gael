@@ -26,7 +26,7 @@ const albumSchema = new mongoose.Schema({
     type: String,
   },
   songs: {
-    type: [String],
+    type: [],
   },
   usersBuy: {
     type: [String],

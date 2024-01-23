@@ -10,6 +10,8 @@ import { userRoutes } from './routes/user/user.routes';
 import { songRoutes } from './routes/songs/song.routes';
 import { albumRoutes } from './routes/songs/album.routes';
 import fileUpload from 'express-fileupload';
+import Song from './models/songs/song.model';
+import Album from './models/songs/album.model';
 
 const { port } = config;
 
@@ -28,7 +30,7 @@ const io = new Server(httpServer, {
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static('public')); // pour servir les fichiers statiques
+// app.use(express.static('public')); // pour servir les fichiers statiques
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(fileUpload());
@@ -38,7 +40,6 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/songs', songRoutes);
 app.use('/Albums', albumRoutes);
-
 
 // Socket.IO connection handling
 io.on('connection', (socket: Socket) => {
