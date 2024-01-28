@@ -61,4 +61,31 @@ export default class AuthMiddleware {
         .json({ message: "An error occurred while processing the request" });
     }
   }
+
+  // admin or user :
+  public static async isAdminOrUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) {
+        res.status(401).json({ message: "No token, authorization denied" });
+        return;
+      }
+      const decoded: any = jwt.verify(token, JWT_SECRET);
+      if (decoded.role !== "admin" && decoded.role !== "user") {
+        res.status(401).json({ message: "No token, authorization denied" });
+        return;
+      }
+      req.body.user = decoded;
+      next();
+    } catch (error: any) {
+      console.error("An error occurred while processing the request:", error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while processing the request" });
+    }
+  }
 }
