@@ -1,10 +1,14 @@
-import { Model, Document } from 'mongoose';
 import { Request, Response } from 'express';
+import { Model } from 'mongoose';
 
-export default class GenericController<T extends Document> {
-  constructor(private model: Model<T>) {}
+export default class GenericController {
+  private model: Model<any>;
 
-  public async getAll(req: Request, res: Response) {
+  constructor(model: Model<any>) {
+    this.model = model;
+  }
+
+  public getAll = async (req: Request, res: Response) => {
     try {
       const items = await this.model.find();
       res.status(200).json(items);
@@ -13,7 +17,7 @@ export default class GenericController<T extends Document> {
     }
   }
 
-  public async getById(req: Request, res: Response) {
+  public getById = async (req: Request, res: Response) => {
     try {
       const item = await this.model.findById(req.params.id);
       res.status(200).json(item);
@@ -22,7 +26,7 @@ export default class GenericController<T extends Document> {
     }
   }
 
-  public async create(req: Request, res: Response) {
+  public create = async (req: Request, res: Response) => {
     try {
       const item = await this.model.create(req.body);
       res.status(201).json(item);
@@ -31,7 +35,7 @@ export default class GenericController<T extends Document> {
     }
   }
 
-  public async update(req: Request, res: Response) {
+  public update = async (req: Request, res: Response) => {
     try {
       const item = await this.model.findById(req.params.id);
       if (!item) {
@@ -44,7 +48,7 @@ export default class GenericController<T extends Document> {
     }
   }
 
-  public async delete(req: Request, res: Response) {
+  public delete = async (req: Request, res: Response) => {
     try {
       const item = await this.model.findById(req.params.id);
       if (!item) {
