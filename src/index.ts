@@ -7,11 +7,24 @@ import './db/mongoDB'; // Connect to MongoDB
 import ChatController from './controllers/chat/Chat.ctrl';
 import { authRoutes } from './routes/user/auth.routes';
 import { userRoutes } from './routes/user/user.routes';
-import { songRoutes } from './routes/songs/song.routes';
-import { albumRoutes } from './routes/songs/album.routes';
 import fileUpload from 'express-fileupload';
-import Song from './models/songs/song.model';
+
+//
+import generateRoutesAndController from './routes/medias/index.routes';
+
 import Album from './models/songs/album.model';
+import Song from './models/songs/song.model';
+import Event from './models/events/event.model';
+
+const { router: songRoutes, path: songPath } = generateRoutesAndController(Song, '/songs');
+const { router: albumRoutes, path: albumPath } = generateRoutesAndController(Album, '/albums');
+const { router: eventRoutes, path: eventPath } = generateRoutesAndController(Event, '/events');
+// const { router: streamingRoutes, path: streamingPath } = generateRoutesAndController(Streaming, '/streamings');
+// const { router: enseignementRoutes, path: enseignementPath } = generateRoutesAndController(Enseignement, '/enseignements');
+// const { router: radioRoutes, path: radioPath } = generateRoutesAndController(Radio, '/radios');
+// const { router: podcastRoutes, path: podcastPath } = generateRoutesAndController(Podcast, '/podcasts');
+
+
 
 const { port } = config;
 
@@ -30,7 +43,6 @@ const io = new Server(httpServer, {
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
-// app.use(express.static('public')); // pour servir les fichiers statiques
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(fileUpload());
@@ -38,8 +50,14 @@ app.use(fileUpload());
 // Routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-app.use('/songs', songRoutes);
-app.use('/Albums', albumRoutes);
+app.use(songPath, songRoutes);
+app.use(albumPath, albumRoutes);
+app.use(eventPath, eventRoutes);
+// app.use(streamingPath, streamingRoutes);
+// app.use(enseignementPath, enseignementRoutes);
+// app.use(radioPath, radioRoutes);
+// app.use(podcastPath, podcastRoutes);
+
 
 // Socket.IO connection handling
 io.on('connection', (socket: Socket) => {

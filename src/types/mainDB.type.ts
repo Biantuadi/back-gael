@@ -65,6 +65,17 @@ export interface IticketEvent extends mongoose.Document {
   createdAt?: Date;
 }
 
+// streamings
+export interface IStreaming extends mongoose.Document {
+  id: string;
+  title: string;
+  thumbnail: string;
+  videoLink: string;
+  description?: string;
+  date?: Date;
+  createdAt?: Date;
+}
+
 export interface IfactureAlbum extends mongoose.Document {
   id: string;
   album: string;
