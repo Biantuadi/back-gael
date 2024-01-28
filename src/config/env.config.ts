@@ -16,12 +16,11 @@ const {
   MONGO_URL,
 } = process.env;
 
-
 const config: AppConfig = {
   port: parseInt(PORT),
   jwtSecret: JWT_SECRET || "",
   tokenExpiration: TOKEN_EXPIRATION || "",
-  mongoUrl: MONGO_URL || "",
+  mongoUrl: MONGO_URL || ""
 };
 
 export default config;

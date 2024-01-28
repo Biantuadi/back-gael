@@ -76,6 +76,37 @@ export interface IStreaming extends mongoose.Document {
   createdAt?: Date;
 }
 
+// podcasts
+export interface IPodcast extends mongoose.Document {
+  id: string;
+  title: string;
+  thumbnail: string;
+  audioLink: string;
+  description?: string;
+  date?: Date;
+  createdAt?: Date;
+}
+
+// enseignements
+export interface IEnseignement extends mongoose.Document {
+  id: string;
+  title: string;
+  thumbnail?: string;
+  audioLink: string;
+  date?: Date;
+  createdAt?: Date;
+}
+
+// radios
+export interface IRadio extends mongoose.Document {
+  id: string;
+  title: string;
+  thumbnail?: string;
+  audioLink: string;
+  date?: Date;
+  createdAt?: Date;
+}
+
 export interface IfactureAlbum extends mongoose.Document {
   id: string;
   album: string;

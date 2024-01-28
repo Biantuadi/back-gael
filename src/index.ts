@@ -1,4 +1,3 @@
-// index.ts
 import app, { httpServer, io } from './app';
 import './db/mongoDB'; // Connect to MongoDB
 import config from './config/env.config';

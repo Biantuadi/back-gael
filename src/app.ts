@@ -1,4 +1,3 @@
-// app.config.ts
 import express, { Application } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
