@@ -52,7 +52,7 @@ export default class UserController {
       // Mise à jour du chemin de l'avatar dans la base de données
       await User.findByIdAndUpdate(userId, { $set: { avatar: base64Avatar } });
 
-      res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." });
+      res.status(200).json({ message: "Avatar téléchargé et enregistré avec succès." , avatar: base64Avatar});
     } catch (error: any) {
       console.error("Une erreur s'est produite lors du traitement de la demande :", error);
       res.status(500).json({ message: "Une erreur s'est produite lors du traitement de la demande." });
