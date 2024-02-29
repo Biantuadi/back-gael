@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import config from "../../config/env.config";
+import { io } from "../../app";
 
 const JWT_SECRET = config.jwtSecret as string;
 const TOKEN_EXPIRATION = config.tokenExpiration as string;
@@ -53,6 +54,10 @@ export default class AuthController {
         ...user.toObject(),
         password: undefined,
       };
+      const socketId = (req as any).socket.id;
+
+      // Envoyez un événement de connexion réussie au client
+      io.to(socketId).emit('loginSuccess', { userId: user._id });
 
       res.status(200).json({ user: userToSend, token });
     } catch (error: any) {
@@ -111,6 +116,11 @@ export default class AuthController {
         ...savedUser.toObject(),
         password: undefined,
       };
+
+      const socketId = (req as any).socket.id;
+
+      // Envoyez un événement de connexion réussie au client
+      io.to(socketId).emit('loginSuccess', { userId: savedUser._id  });
 
       res.status(200).json({ user: userToSend, token });
 

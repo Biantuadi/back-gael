@@ -6,7 +6,8 @@ export const handleSocketConnection = (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
 
   // Gérer la connexion du socket dans le chat
-  ChatController.handleConnection(socket);
+  const chatController = new ChatController();
+  chatController.handleConnection(socket);
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);

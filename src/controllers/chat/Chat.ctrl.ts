@@ -1,6 +1,7 @@
-import { Socket } from 'socket.io';
-import Chat from '../../models/chat/chats.model';  
+import Chat from '../../models/chat/chats.model';
 import { User } from '../../models/user.model';
+import { Socket } from 'socket.io';
+import { io } from '../../app';
 
 interface ChatMessage {
   sender: string;
@@ -8,91 +9,52 @@ interface ChatMessage {
   message: string;
 }
 
-interface TypingStatus {
-  sender: string;
-  receiver: string;
-  isTyping: boolean;
-}
-
-class ChatController {
+export default class ChatController {
   async handleConnection(socket: Socket) {
     console.log(`User connected: ${socket.id}`);
 
     // Mise à jour du statut isConnected de l'utilisateur
     socket.on('setIsConnected', async (userId: string) => {
       try {
-        const user = await User.findByIdAndUpdate(userId, { isConected: true }, { new: true });
+        const user = await User.findByIdAndUpdate(userId, { isConnected: true }, { new: true });
         console.log(`User ${userId} connected and status updated to true`);
       } catch (error) {
         console.error(`Error updating user status for ${userId}: ${error}`);
       }
     });
 
-    // Écouter l'événement de message
-    socket.on('chatMessage', async (data: ChatMessage) => {
-      console.log('Message reçu:', data);
+    // Autres méthodes de gestion de chat...
 
-      // Enregistrez le message dans la base de données
-      const chat = await Chat.findOneAndUpdate(
-        {
-          $or: [
-            { user1: data.sender, user2: data.receiver },
-            { user1: data.receiver, user2: data.sender }
-          ]
-        },
-        {
-          $push: {
-            messages: {
-              user: data.sender,
-              message: data.message,
-              isRead: false,
-              isTyping: false,
-            },
-          },
-        },
-        { new: true, upsert: true }
-      );
+  }
 
-      // Émettre le message à tous les clients connectés
-      socket.to(data.receiver).emit('chatMessage', data);
-    });
+  async sendMessage(data: ChatMessage): Promise<void> {
+    try {
+      // Vérifiez si la conversation existe déjà ou créez-la si elle n'existe pas
+      const conversation = await Chat.findOne({
+        $or: [
+          { participants: [data.sender, data.receiver] },
+          { participants: [data.receiver, data.sender] }
+        ]
+      });
 
-    // Écouter l'événement d'écriture (typing)
-    socket.on('typing', async (data: TypingStatus) => {
-      console.log('Typing:', data);
+      let conversationId = '';
+      if (conversation) {
+        conversationId = conversation._id;
+      } else {
+        const newConversation = new Chat({ participants: [data.sender, data.receiver] });
+        const savedConversation = await newConversation.save();
+        conversationId = savedConversation._id;
+      }
 
-      // Enregistrez l'état d'écriture dans la base de données
-      const chat = await Chat.findOneAndUpdate(
-        {
-          $or: [
-            { user1: data.sender, user2: data.receiver },
-            { user1: data.receiver, user2: data.sender }
-          ]
-        },
-        {
-          $set: {
-            'messages.$[elem].isTyping': data.isTyping,
-          },
-        },
-        {
-          arrayFilters: [{ 'elem.user': data.sender }],
-          new: true,
-        }
-      );
+      // Enregistrez le message dans la conversation
+      await Chat.findByIdAndUpdate(conversationId, { $push: { messages: data } }, { new: true });
 
-      // Émettre l'état d'écriture à l'utilisateur destinataire
-      socket.to(data.receiver).emit('typing', data);
-    });
+      // Émettez un événement 'newMessage' pour informer les utilisateurs concernés
+      io.to(data.receiver).emit('newMessage', data);
 
-    socket.on('disconnect', async () => {
-      console.log(`User disconnected: ${socket.id}`);
-
-      // Mise à jour du statut isConnected de l'utilisateur
-      const user = await User.findOneAndUpdate({ socketId: socket.id }, { isConected: false }, { new: true });
-      console.log(`User ${user?.id} disconnected and status updated to false`);
-    });
+      console.log(`Message sent from ${data.sender} to ${data.receiver}: ${data.message}`);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   }
 }
-
-export default new ChatController();
-

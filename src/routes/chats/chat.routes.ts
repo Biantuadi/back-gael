@@ -1,17 +1,11 @@
-// // chat.routes.ts
-// import { Router } from 'express';
-// import ChatController from '../controllers/chat.ctrl';
-// import AuthMiddleware from '../middlewares/authMiddleware';
+import ChatController from '../../controllers/chat/Chat.ctrl';
 
-// const chatRoutes = Router();
-// const chatController = new ChatController();
+import { Router } from 'express';
 
-// // Middleware d'authentification pour s'assurer que l'utilisateur est connecté
-// chatRoutes.use(AuthMiddleware.isTokenValid);
+const chatRoutes = Router();
+const chatController = new ChatController();
 
-// // Routes du chat
-// chatRoutes.get('/user/:userId', chatController.getChatByUser);
-// chatRoutes.post('/:chatId/message', chatController.sendMessage);
-// chatRoutes.get('/:chatId/messages', chatController.getChatMessages);
+// Route pour envoyer un message
+chatRoutes.post('/messages', chatController.sendMessage);
 
-// export { chatRoutes };
+export default chatRoutes;
