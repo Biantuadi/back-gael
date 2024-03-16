@@ -38,6 +38,11 @@ export default class UserController {
     try {
       const userId = (req.body.user as { userID: string }).userID;
 
+      if (!userId) {
+        res.status(400).json({ message: "Aucun ID d'utilisateur n'a été fourni." });
+        return;
+      }
+
       if (!req.files || Object.keys(req.files).length === 0 || !req.files.avatar) {
         res.status(400).json({ message: "Aucun fichier d'avatar n'a été téléchargé." });
         return;
@@ -62,7 +67,9 @@ export default class UserController {
 
   public async updateUser(req: Request, res: Response): Promise<void> {
     try {
-      const user = await User.findById(req.params.id);
+      const userId = (req.body.user as { userID: string }).userID;
+      const user = await User.findById(userId);
+      
       if (!user) {
         res.status(400).json({ message: "User not found" });
         return;

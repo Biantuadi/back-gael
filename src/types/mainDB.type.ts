@@ -53,7 +53,8 @@ export interface IEvent extends mongoose.Document {
   location: string;
   tickets?: string[];
   date: Date;
-  time: string;
+  startTime: string;
+  endTime: string;
   createdAt?: Date;
 }
 
