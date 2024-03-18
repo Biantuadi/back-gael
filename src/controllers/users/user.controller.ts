@@ -74,8 +74,10 @@ export default class UserController {
         res.status(400).json({ message: "User not found" });
         return;
       }
-      await user.updateOne({ ...req.body });
-      res.status(200).json({ message: "User updated successfully" });
+
+      const userUpdated = await user.updateOne({ ...req.body });
+
+      res.status(200).json({ message: "User updated successfully", user: userUpdated});
     } catch (error: any) {
       res.status(500).json(error);
     }
