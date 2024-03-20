@@ -132,6 +132,34 @@ export default class AuthController {
     }
   }
 
+  public async updateUserPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { userID, oldPassword, newPassword } = req.body;
+
+      const user = await User.findById(userID);
+
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!passwordMatch) {
+        res.status(400).json({ message: "Invalid old password" });
+        return;
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, AuthController.SALT_ROUNDS);
+      user.password = hashedNewPassword;
+      await user.save();
+
+      res.status(200).json({ message: "Password updated successfully" });
+    } catch (error: any) {
+      console.error("An error occurred while updating password:", error);
+      res.status(500).json({ message: "An error occurred while updating password" });
+    }
+  }
+
   public async deleteAll(req: Request, res: Response): Promise<void> {
     try {
       await User.deleteMany({});

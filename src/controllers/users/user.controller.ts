@@ -67,21 +67,28 @@ export default class UserController {
 
   public async updateUser(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req.body.user as { userID: string }).userID;
-      const user = await User.findById(userId);
-      
+      const { userID } = req.body.user;
+      const user = await User.findById(userID);
+  
       if (!user) {
-        res.status(400).json({ message: "User not found" });
+        res.status(404).json({ message: "User not found" });
         return;
       }
 
-      const userUpdated = await user.updateOne({ ...req.body });
-
-      const userToSend = await User.findById(userId , {password: 0});
-
-      res.status(200).json({ message: "User updated successfully", user: userToSend});
-    } catch (error: any) {
-      res.status(500).json(error);
+      // Ne jamais mettre à jour le mot de passe directement depuis la requête
+      const { password, ...userData } :any= req.body;
+  
+      await user.updateOne(userData);
+  
+      // Recherche de l'utilisateur mis à jour sans renvoyer le mot de passe
+      const userUpdated = await User.findById(userID, { password: 0 });
+  
+      // Renvoi de l'utilisateur mis à jour
+      res.status(200).json({ message: "User updated successfully", user: userUpdated });
+    } catch (error) {
+      // Gestion des erreurs
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 
