@@ -77,7 +77,9 @@ export default class UserController {
 
       const userUpdated = await user.updateOne({ ...req.body });
 
-      res.status(200).json({ message: "User updated successfully", user: userUpdated});
+      const userToSend = await User.findById(userId , {password: 0});
+
+      res.status(200).json({ message: "User updated successfully", user: userToSend});
     } catch (error: any) {
       res.status(500).json(error);
     }
