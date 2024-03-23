@@ -79,12 +79,18 @@ export default class UserController {
       const { password, ...userData } :any= req.body;
   
       await user.updateOne(userData);
-  
-      // Recherche de l'utilisateur mis à jour sans renvoyer le mot de passe
-      const userUpdated = await User.findById(userID, { password: 0 });
-  
-      // Renvoi de l'utilisateur mis à jour
-      res.status(200).json({ message: "User updated successfully", user: userUpdated });
+
+      // Renvoi de l'utilisateur mis à jour sans le mot de passe
+      const updatedUser = await User.findById(userID);
+
+      if (!updatedUser) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const userWithoutPassword = { ...updatedUser.toObject(), password: undefined };
+
+      res.status(200).json({ message: "User updated successfully", user: userWithoutPassword });
     } catch (error) {
       // Gestion des erreurs
       console.error("Error updating user:", error);
