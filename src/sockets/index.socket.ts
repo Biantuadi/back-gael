@@ -9,6 +9,11 @@ export const handleSocketConnection = (socket: Socket) => {
   const chatController = new ChatController();
   chatController.handleConnection(socket);
 
+  // Gérer la réception de messages
+  socket.on('sendMessage', (messageData: { sender: string, receiver: string, message: string }) => {
+    chatController.handleMessage(socket, messageData);
+  });
+
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
   });

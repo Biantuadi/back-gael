@@ -1,19 +1,40 @@
-import Chat from '../../models/chat/chats.model';
-import { User } from '../../models/user.model';
 import { Socket } from 'socket.io';
+import MessageModel, { IMessage } from '../../models/chat/message.model';
+import { User } from '../../models/user.model';
 import { io } from '../../app';
 
-interface ChatMessage {
-  sender: string;
-  receiver: string;
-  message: string;
-}
-
 export default class ChatController {
+  async handleMessage(socket: Socket, messageData: { sender: string, receiver: string, message: string }) {
+    try {
+      // Créer une nouvelle instance de message à partir des données
+      const message: IMessage = new MessageModel({
+        sender: messageData.sender,
+        receiver: messageData.receiver,
+        message: messageData.message
+      });
+
+      // Sauvegarder le message en base de données
+      await message.save();
+
+      // Émettre le message à l'émetteur
+      socket.emit('messageSent', message);
+
+      // Trouver le socket du destinataire
+      const receiverSocket = io.sockets.sockets.get(messageData.receiver);
+
+      // Si le socket du destinataire existe, lui émettre le message
+      if (receiverSocket) {
+        receiverSocket.emit('messageReceived', message);
+      }
+    } catch (error) {
+      console.error(`Error sending message: ${error}`);
+    }
+  }
+
   async handleConnection(socket: Socket) {
     console.log(`User connected: ${socket.id}`);
 
-    // Mise à jour du statut isConnected de l'utilisateur
+    // Gérer la connexion du socket dans le chat
     socket.on('setIsConnected', async (userId: string) => {
       try {
         const user = await User.findByIdAndUpdate(userId, { isConnected: true }, { new: true });
@@ -23,38 +44,14 @@ export default class ChatController {
       }
     });
 
-    // Autres méthodes de gestion de chat...
-
-  }
-
-  async sendMessage(data: ChatMessage): Promise<void> {
-    try {
-      // Vérifiez si la conversation existe déjà ou créez-la si elle n'existe pas
-      const conversation = await Chat.findOne({
-        $or: [
-          { participants: [data.sender, data.receiver] },
-          { participants: [data.receiver, data.sender] }
-        ]
-      });
-
-      let conversationId = '';
-      if (conversation) {
-        conversationId = conversation._id;
-      } else {
-        const newConversation = new Chat({ participants: [data.sender, data.receiver] });
-        const savedConversation = await newConversation.save();
-        conversationId = savedConversation._id;
+    // Gérer la déconnexion du socket du chat
+    socket.on('disconnect', async () => {
+      try {
+        const user:any = await User.findOneAndUpdate({ socketId: socket.id }, { isConnected: false, socketId: null }, { new: true });
+        console.log(`User ${user.id} disconnected and status updated to false`);
+      } catch (error) {
+        console.error(`Error updating user status on disconnect: ${error}`);
       }
-
-      // Enregistrez le message dans la conversation
-      await Chat.findByIdAndUpdate(conversationId, { $push: { messages: data } }, { new: true });
-
-      // Émettez un événement 'newMessage' pour informer les utilisateurs concernés
-      io.to(data.receiver).emit('newMessage', data);
-
-      console.log(`Message sent from ${data.sender} to ${data.receiver}: ${data.message}`);
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+    });
   }
 }

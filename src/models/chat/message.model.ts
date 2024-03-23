@@ -1,15 +1,24 @@
 import mongoose from "mongoose";
-import { IMessage } from "../../types/mainDB.type";
+// import { IMessage } from "../../types/mainDB.type";
 
-const messageSchema = new mongoose.Schema({
-    id: {type: String, required: true},
-    user: {type: String, required: true},
-    message: {type: String, required: true},
-    isRead: {type: Boolean, required: true},
-    isTyping: {type: Boolean, required: true},
-    createdAt: {type: Date, default: Date.now}
-});
+import { Schema, Document } from 'mongoose';
 
-const Message = mongoose.model<IMessage>("Message", messageSchema);
+export interface IMessage extends Document {
+  sender: string; 
+  receiver: string; 
+  message: string; 
+  timestamp: Date; 
+}
 
-export default Message;
+const MessageSchema: Schema = new Schema({
+    sender: { type: Schema.Types.ObjectId, ref: 'User', required: true }, 
+    receiver: { type: Schema.Types.ObjectId, ref: 'User', required: true }, 
+    message: { type: String, required: true }, 
+    timestamp: { type: Date, default: Date.now } 
+  });
+  
+  // Créer un modèle à partir du schéma
+  const MessageModel = mongoose.model<IMessage>('Message', MessageSchema);
+  
+  export default MessageModel;
+  
