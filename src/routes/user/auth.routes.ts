@@ -1,5 +1,6 @@
 import  AuthController  from '../../controllers/users/auth.ctrl';
 import {Router} from 'express';
+import AuthMiddleware from '../../middlewares/authMiddleware';
 
 const authRoutes = Router();
 const authController = new AuthController();
@@ -12,6 +13,6 @@ authRoutes.post('/register', authController.signup);
 authRoutes.put('/updatePassword', authController.updateUserPassword);
 
 // remove db
-authRoutes.delete('/deleteAll', authController.deleteAll);
+authRoutes.delete('/deleteAll', AuthMiddleware.isTokenValid, authController.deleteAll);
 
 export {authRoutes};
