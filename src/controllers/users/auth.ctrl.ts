@@ -134,7 +134,8 @@ export default class AuthController {
 
   public async updateUserPassword(req: Request, res: Response): Promise<void> {
     try {
-      const { userID, oldPassword, newPassword } = req.body;
+      const userID = (req.body.user as { userID: string }).userID;
+      const { oldPassword, newPassword } = req.body;
 
       const user = await User.findById(userID);
 
