@@ -23,16 +23,31 @@ export default class UserController {
 
   public async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const users = await User.find();
-      const usersWithoutPasswords = users.map((user) => {
-        return { ...user.toObject(), password: undefined };
-      });
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = 10;
 
-      res.status(200).json(usersWithoutPasswords);
+        const skip = (page - 1) * limit;
+
+        const users = await User.find().skip(skip).limit(limit);
+        const totalCount = await User.countDocuments();
+
+        const totalPages = Math.ceil(totalCount / limit);
+
+        const usersWithoutPasswords = users.map((user) => {
+            return { ...user.toObject(), password: undefined };
+        });
+
+        res.status(200).json({
+            users: usersWithoutPasswords,
+            totalUsers: totalCount,
+            currentPage: page,
+            totalPages,
+        });
     } catch (error: any) {
-      res.status(500).json(error);
+        res.status(500).json(error);
     }
-  }
+}
+
 
   public async uploadAvatar(req: Request, res: Response): Promise<void> {
     try {
