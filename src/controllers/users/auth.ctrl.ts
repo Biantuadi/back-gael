@@ -54,11 +54,7 @@ export default class AuthController {
         ...user.toObject(),
         password: undefined,
       };
-      const socketId = (req as any).socket.id;
-
-      // Envoyez un événement de connexion réussie au client
-      io.to(socketId).emit('loginSuccess', { userId: user._id });
-
+      
       res.status(200).json({ user: userToSend, token });
     } catch (error: any) {
       console.error("An error occurred while processing the request:", error);

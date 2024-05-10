@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import { IUser } from "../types/mainDB.type";
+import { strBase64Avatar } from "./base64_avatar/default_avatar";
 
 const userSchema = new mongoose.Schema({
   firstname: {
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: "https://as2.ftcdn.net/v2/jpg/05/17/66/89/1000_F_517668991_LZAIKXcvnpbMewxYumyvAAI45JM2eX7E.jpg",
+    default: strBase64Avatar,
   },
   phone: {
     type: String,

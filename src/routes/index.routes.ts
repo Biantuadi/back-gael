@@ -17,8 +17,6 @@ const router = Router();
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
-router.use('/chats', chatRoutes);
-router.use('/chats', genericRoutes(Album));
 router.use('/songs', genericRoutes(Song));
 router.use('/albums', genericRoutes(Album));
 router.use('/events', genericRoutes(Event));
