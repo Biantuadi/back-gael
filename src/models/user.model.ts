@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
+import bcrypt from "bcrypt";
 import { IUser } from "../types/mainDB.type";
 import { strBase64Avatar } from "./base64_avatar/default_avatar";
 
@@ -66,6 +67,13 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Plugin uniqueValidator pour garantir que les emails sont uniques
 userSchema.plugin(uniqueValidator, { message: "{PATH} must be unique" });
 
+// Méthode pour comparer les mots de passe
+userSchema.methods.comparePassword = async function (candidatePassword: string) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Création du modèle User avec le schéma
 export const User = mongoose.model<IUser>("User", userSchema);

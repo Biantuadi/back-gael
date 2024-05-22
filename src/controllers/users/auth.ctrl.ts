@@ -71,8 +71,8 @@ export default class AuthController {
         res.status(400).json({ errors: errors.array() });
         return;
       }
-      const { firstname, lastname, email, password } = req.body;
 
+      const { firstname, lastname, email, password } = req.body;
       const transformedEmail = email.toLowerCase();
 
       const emailRegex = new RegExp(
@@ -84,15 +84,17 @@ export default class AuthController {
         return;
       }
 
-      const user = await User.findOne({ transformedEmail });
+      const user = await User.findOne({ email: transformedEmail });
       if (user) {
         res.status(400).json({ message: "User already exists" });
         return;
       }
+
       const hashedPassword = await bcrypt.hash(
         password,
         AuthController.SALT_ROUNDS
       );
+
       const newUser = new User({
         firstname,
         lastname,
@@ -103,28 +105,20 @@ export default class AuthController {
 
       const savedUser = await newUser.save();
 
-      const token = jwt.sign({ userID: savedUser._id , role: savedUser.role}, JWT_SECRET, {
+      const token = jwt.sign({ userID: savedUser._id, role: savedUser.role }, JWT_SECRET, {
         expiresIn: TOKEN_EXPIRATION,
       });
 
-      // send back the all user info (except password) and the token
       const userToSend = {
         ...savedUser.toObject(),
         password: undefined,
       };
 
-      const socketId = (req as any).socket.id;
-
-      // Envoyez un événement de connexion réussie au client
-      io.to(socketId).emit('loginSuccess', { userId: savedUser._id  });
-
       res.status(200).json({ user: userToSend, token });
 
     } catch (error: any) {
       console.error("An error occurred while processing the request:", error);
-      res
-        .status(500)
-        .json({ message: "An error occurred while processing the request" });
+      res.status(500).json({ message: "An error occurred while processing the request" });
     }
   }
 

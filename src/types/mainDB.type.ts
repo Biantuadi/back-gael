@@ -12,6 +12,7 @@ export interface IUser extends mongoose.Document {
   address?: string;
   password: string;
   role?: string;
+  comparePassword(password: string): Promise<boolean>;
   isConected?: boolean;
   preferences?: {
     theme: string;
