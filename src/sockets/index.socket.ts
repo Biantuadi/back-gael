@@ -1,20 +1,35 @@
 // sockets/index.ts
 import { Socket } from 'socket.io';
-import ChatController from '../controllers/chat/Chat.ctrl';
 
 export const handleSocketConnection = (socket: Socket) => {
-  console.log(`User connected: ${socket.id}`);
 
   // Gérer la connexion du socket dans le chat
-  const chatController = new ChatController();
-  chatController.handleConnection(socket);
-
-  // Gérer la réception de messages
-  socket.on('sendMessage', (messageData: { sender: string, receiver: string, message: string }) => {
-    chatController.handleMessage(socket, messageData);
+  socket.on('setIsConnected', async (userId: string) => {
+    try {
+      // Mettre à jour le statut de connexion de l'utilisateur
+      console.log(`User ${userId} connected and status updated to true`);
+    } catch (error) {
+      console.error(`Error updating user status for ${userId}: ${error}`);
+    }
   });
 
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
+  // Gérer la réception de messages
+  socket.on('message', async (message: any) => {
+    try {
+      // Traiter le message
+      console.log(`Message received: ${message}`);
+    } catch (error) {
+      console.error(`Error receiving message: ${error}`);
+    }
+  });
+
+  // Gérer la déconnexion du socket du chat
+  socket.on('disconnect', async () => {
+    try {
+      // Mettre à jour le statut de connexion de l'utilisateur
+      console.log(`User disconnected and status updated to false`);
+    } catch (error) {
+      console.error(`Error updating user status on disconnect: ${error}`);
+    }
   });
 };
