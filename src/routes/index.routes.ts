@@ -11,7 +11,6 @@ import Enseignement from '../models/medias/enseignement.model';
 
 import { authRoutes } from './user/auth.routes';
 import { userRoutes } from './user/user.routes';
-import chatRoutes from './chats/chat.routes';
 
 const router = Router();
 
